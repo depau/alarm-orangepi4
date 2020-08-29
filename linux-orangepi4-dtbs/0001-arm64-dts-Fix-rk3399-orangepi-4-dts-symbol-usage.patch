@@ -1,0 +1,84 @@
+From f71f7f5130d896523d190cb9cf930f8d4930eb72 Mon Sep 17 00:00:00 2001
+From: Davide Depau <davide@depau.eu>
+Date: Sat, 29 Aug 2020 10:30:46 +0200
+Subject: [PATCH] arm64: dts: Fix rk3399-orangepi-4 dts symbol usage
+
+---
+ .../boot/dts/rockchip/rk3399-orangepi-4.dts    |  4 ++--
+ arch/arm64/boot/dts/rockchip/rk3399.dtsi       | 18 +++++++++---------
+ 2 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts b/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts
+index 1b2f605e2549..3db521c43e2b 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts
+@@ -983,7 +983,7 @@ hdmi {
+ 
+ 	i2s1 {
+ 		i2s_8ch_mclk: i2s-8ch-mclk {
+-			rockchip,pins = <4 RK_PA0 RK_FUNC_1 &pcfg_pull_none>;
++			rockchip,pins = <4 RK_PA0 1 &pcfg_pull_none>;
+ 		};
+ 	};
+ 
+@@ -1055,7 +1055,7 @@ leds_gpio: leds-gpio {
+ 
+ 	cam_pins {
+ 		cif_clkout_a: cif-clkout-a {
+-			rockchip,pins = <2 11 RK_FUNC_3 &pcfg_pull_none>;
++			rockchip,pins = <2 11 3 &pcfg_pull_none>;
+ 		};
+ 
+ 		cif_clkout_a_sleep: cif-clkout-a-sleep {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399.dtsi b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+index d00a7f3c8c7d..6295dfbf25c3 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399.dtsi
+@@ -2295,35 +2295,35 @@ sdio0_int: sdio0-int {
+ 		sdmmc {
+ 			sdmmc_bus1: sdmmc-bus1 {
+ 				rockchip,pins =
+-					<4 RK_PB0 RK_FUNC_1 &pcfg_pull_up_8ma>;
++					<4 RK_PB0 1 &pcfg_pull_up_8ma>;
+ 			};
+ 
+ 			sdmmc_bus4: sdmmc-bus4 {
+ 				rockchip,pins =
+-					<4 RK_PB0 RK_FUNC_1 &pcfg_pull_up_8ma>,
+-					<4 RK_PB1 RK_FUNC_1 &pcfg_pull_up_8ma>,
+-					<4 RK_PB2 RK_FUNC_1 &pcfg_pull_up_8ma>,
+-					<4 RK_PB3 RK_FUNC_1 &pcfg_pull_up_8ma>;
++					<4 RK_PB0 1 &pcfg_pull_up_8ma>,
++					<4 RK_PB1 1 &pcfg_pull_up_8ma>,
++					<4 RK_PB2 1 &pcfg_pull_up_8ma>,
++					<4 RK_PB3 1 &pcfg_pull_up_8ma>;
+ 			};
+ 
+ 			sdmmc_clk: sdmmc-clk {
+ 				rockchip,pins =
+-					<4 RK_PB4 RK_FUNC_1 &pcfg_pull_none_12ma>;
++					<4 RK_PB4 1 &pcfg_pull_none_12ma>;
+ 			};
+ 
+ 			sdmmc_cmd: sdmmc-cmd {
+ 				rockchip,pins =
+-					<4 RK_PB5 RK_FUNC_1 &pcfg_pull_up_8ma>;
++					<4 RK_PB5 1 &pcfg_pull_up_8ma>;
+ 			};
+ 
+ 			sdmmc_cd: sdmmc-cd {
+ 				rockchip,pins =
+-					<0 RK_PA7 RK_FUNC_1 &pcfg_pull_up>;
++					<0 RK_PA7 1 &pcfg_pull_up>;
+ 			};
+ 
+ 			sdmmc_wp: sdmmc-wp {
+ 				rockchip,pins =
+-					<0 RK_PB0 RK_FUNC_1 &pcfg_pull_up_8ma>;
++					<0 RK_PB0 1 &pcfg_pull_up_8ma>;
+ 			};
+ 		};
+ 
+-- 
+2.28.0
+
