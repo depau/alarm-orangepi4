@@ -1,0 +1,94 @@
+From 4f23d1b886a450dfc7ffac294cbe7c5ea2e96294 Mon Sep 17 00:00:00 2001
+From: Davide Depau <davide@depau.eu>
+Date: Thu, 1 Oct 2020 04:41:25 +0200
+Subject: [PATCH] MAINTAINER CUSTOM PATCH: Additional PWM fan
+
+This patch enables a 5V, 4-pin PWM fan to be controlled via the GPIO
+port.
+
+Add a ~1.2kOhm pull-up resistor between +5V and tacho in the fan
+connector to be able to read RPM speed. (Reference [1])
+
+Connect the PWM pin to pin 7 (GPIO4_C6/PWM1) and tacho to pin 11
+(GPIO1_A1).
+
+                             +-------+
+                  VCC3V3_SYS | 1   2 | VCC5V0_SYS
+                I2C2_SDA_3V0 | 3   4 | VCC5V0_SYS    <- FAN +5V
+                I2C2_SCL_3V0 | 5   6 | GND           <- FAN GND
+FAN PWM  ->    GPIO4_C6/PWM1 | 7   8 | GPIO4_C1/I2C3_SCL
+                         GND | 9  10 | GPIO4_C0/I2C3_SDA
+FAN TACH +-> Res -> GPIO1_A1 | 11 12 | GPIO1_C2
+         |            ...    .  ...  .    ...
+         |
+         \--> VCC5V0_SYS
+
+Note that, compared to most SBC layouts adopting the "Raspberry Pi"
+header, the OPI4 has it backwards (i.e. pin 1 is close to the PCI-e
+connector).
+
+The fan will be controllable through the usual hwmon interface.
+
+This patch adds minimum fail-safe thermal trip points to turn on the fan
+on full-blast when the CPU temperature is too high. It is intended to be
+controlled from userspace. Add more trip points to let the kernel do all
+the work.
+
+[1] https://noctua.at/pub/media/wysiwyg/Noctua_PWM_specifications_white_paper.pdf
+---
+ .../boot/dts/rockchip/rk3399-orangepi-4.dts   | 39 +++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts b/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts
+index f0efcc7f01f9..0ab15510e630 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts
+@@ -335,6 +335,45 @@ sdio_pwrseq: sdio-pwrseq {
+ 		 */
+ 		reset-gpios = <&gpio0 10 GPIO_ACTIVE_LOW>; /* GPIO0_B2 */
+ 	};
++
++  fan0: pwm-fan {
++     cooling-levels = <0 125 255>;
++     interrupts = <RK_PA1 IRQ_TYPE_EDGE_FALLING>;
++     interrupt-parent = <&gpio1>;
++     compatible = "pwm-fan";
++     pulses-per-revolution = <2>;
++     interrupt-names = "tach";
++     pwms = <&pwm1 0 10000 0>;
++     #cooling-cells = <2>;
++  };
++};
++
++&cpu_thermal {
++  trips {
++    cpu_cold: cpu_cold {
++      temperature = <0>;
++      hysteresis = <2000>;
++      type = "passive";
++    };
++
++    cpu_crispy: cpu_crispy {
++      temperature = <90000>;
++      hysteresis = <2000>;
++      type = "passive";
++    };
++  };
++
++  cooling_maps {
++    map2 {
++      trip = <&cpu_cold>;
++      cooling-device = <&fan0 0 1>;
++    };
++
++    map3 {
++      trip = <&cpu_crispy>;
++      cooling-device = <&fan0 1 2>;
++    };
++  };
+ };
+ 
+ &cpu_l0 {
+-- 
+2.28.0
+

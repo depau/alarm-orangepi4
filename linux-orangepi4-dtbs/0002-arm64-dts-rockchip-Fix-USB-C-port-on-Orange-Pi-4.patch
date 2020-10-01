@@ -1,0 +1,177 @@
+From f7dce67466885f382c2912a0c3ce4872963debe3 Mon Sep 17 00:00:00 2001
+From: Davide Depau <davide@depau.eu>
+Date: Thu, 1 Oct 2020 04:39:12 +0200
+Subject: [PATCH] arm64: dts: rockchip: Fix USB-C port on Orange Pi 4
+
+---
+ .../boot/dts/rockchip/rk3399-orangepi-4.dts   | 90 ++++++++++++++++---
+ 1 file changed, 77 insertions(+), 13 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts b/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts
+index 3db521c43e2b..f0efcc7f01f9 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts
+@@ -74,7 +74,7 @@ vbus_typec: vbus-typec {
+ 		vin-supply = <&vcc5v0_sys>;
+ 
+ 		regulator-state-mem {
+-			regulator-off-in-suspend;
++			regulator-on-in-suspend;
+ 		};
+ 	};
+ 
+@@ -457,8 +457,6 @@ &rga {
+ 
+ &cdn_dp {
+ 	status = "okay";
+-	extcon = <&fusb0>;
+-	phys = <&tcphy0_dp>;
+ };
+ 
+ &hdmi {
+@@ -729,18 +727,64 @@ &i2c3 {
+ 
+ &i2c4 {
+ 	status = "okay";
+-	i2c-scl-rising-time-ns = <160>;
+-	i2c-scl-falling-time-ns = <30>;
+-	clock-frequency = <400000>;
++	i2c-scl-falling-time-ns = <20>;
++	i2c-scl-rising-time-ns = <600>;
+ 
+ 	fusb0: fusb30x@22 {
+-		compatible = "fairchild,fusb302";
++		compatible = "fcs,fusb302";
+ 		reg = <0x22>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&fusb0_int>;
+-		int-n-gpios = <&gpio1 RK_PA2 GPIO_ACTIVE_HIGH>;
++		interrupt-parent = <&gpio1>;
++		interrupts = <RK_PA2 IRQ_TYPE_LEVEL_LOW>;
+ 		vbus-5v-gpios = <&gpio2 RK_PB4 GPIO_ACTIVE_HIGH>;
++		vbus-supply = <&vbus_typec>;
+ 		status = "okay";
++
++		connector {
++			compatible = "usb-c-connector";
++			data-role = "host";
++			label = "USB-C";
++			op-sink-microwatt = <1000000>;
++			power-role = "dual";
++			sink-pdos =
++				<PDO_FIXED(5000, 2500, PDO_FIXED_USB_COMM)>;
++			source-pdos =
++				<PDO_FIXED(5000, 1400, PDO_FIXED_USB_COMM)>;
++			try-power-role = "source";
++
++			ports {
++				#address-cells = <1>;
++				#size-cells = <0>;
++
++				port@0 {
++					reg = <0>;
++
++					usbc_hs: endpoint {
++						remote-endpoint =
++							<&u2phy0_typec_hs>;
++					};
++				};
++
++				port@1 {
++					reg = <1>;
++
++					usbc_ss: endpoint {
++						remote-endpoint =
++							<&tcphy0_typec_ss>;
++					};
++				};
++
++				port@2 {
++					reg = <2>;
++
++					usbc_dp: endpoint {
++						remote-endpoint =
++							<&tcphy0_typec_dp>;
++					};
++				};
++			};
++		};
+ 	};
+ 
+ 	ft5x06_ts@38 {
+@@ -900,26 +944,46 @@ &tsadc {
+ };
+ 
+ &tcphy0 {
+-	extcon = <&fusb0>;
+ 	status = "okay";
+ };
+ 
++&tcphy0_dp {
++	port {
++		tcphy0_typec_dp: endpoint {
++			remote-endpoint = <&usbc_dp>;
++		};
++	};
++};
++
++&tcphy0_usb3 {
++	port {
++		tcphy0_typec_ss: endpoint {
++			remote-endpoint = <&usbc_ss>;
++		};
++	};
++};
++
+ &tcphy1 {
+ 	status = "okay";
+ };
+ 
+ &u2phy0 {
+ 	status = "okay";
+-	extcon = <&fusb0>;
+ 
+ 	u2phy0_otg: otg-port {
+ 		status = "okay";
+ 	};
+ 
+ 	u2phy0_host: host-port {
+-		phy-supply = <&usb3_vbus>;
++		phy-supply = <&vbus_typec>;
+ 		status = "okay";
+ 	};
++
++  port {
++		u2phy0_typec_hs: endpoint {
++			remote-endpoint = <&usbc_hs>;
++		};
++	};
+ };
+ 
+ &u2phy1 {
+@@ -937,7 +1001,6 @@ u2phy1_host: host-port {
+ 
+ &usbdrd3_0 {
+ 	status = "okay";
+-	extcon = <&fusb0>;
+ };
+ 
+ &usbdrd3_1 {
+@@ -945,12 +1008,13 @@ &usbdrd3_1 {
+ };
+ 
+ &usbdrd_dwc3_0 {
++	dr_mode = "host";
+ 	status = "okay";
+ };
+ 
+ &usbdrd_dwc3_1 {
+-	status = "okay";
+ 	dr_mode = "host";
++	status = "okay";
+ };
+ 
+ &usb_host0_ehci {
+-- 
+2.28.0
+

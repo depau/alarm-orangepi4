@@ -4,7 +4,7 @@ pkgname=linux-orangepi4-dtbs
 pkgver=5.8.0
 _srcname=linux-5.8
 _armbianrev=36405e3397b68600bdd2c34d5a7bcfa0a09b1226
-pkgrel=1
+pkgrel=2
 pkgdesc="Orange Pi 4 DTBs from Armbian"
 arch=('aarch64')
 url='https://github.com/armbian/build/tree/master/patch/kernel/rockchip64-current'
@@ -16,6 +16,15 @@ source=(
         "config"  # from ALARM linux-aarch64
         "armbian-patches::git+https://github.com/armbian/build.git#commit=${_armbianrev}"
         "0001-arm64-dts-Fix-rk3399-orangepi-4-dts-symbol-usage.patch"
+        "0002-arm64-dts-rockchip-Fix-USB-C-port-on-Orange-Pi-4.patch"
+        #"0003-MAINTAINER-CUSTOM-PATCH-Additional-PWM-fan.patch"
+)
+md5sums=(
+         '0e5c4c15266218ef26c50fac0016095b'
+         'cc2ae6ac43ab9e6170bfed62f73e4968'
+         'SKIP'
+         '67e1998c82ab2d06a78f8eb57cb69132'
+         #'662d3217042b175e32c216e8bc882883'
 )
 
 _patches=(
@@ -34,8 +43,10 @@ prepare() {
                 patch -Np1 < "${srcdir}/armbian-patches/patch/kernel/rockchip64-current/${patch}"
         done
 
-        msg2 "Applying 0001-arm64-dts-Fix-rk3399-orangepi-4-dts-symbol-usage.patch"
-        patch -Np1 < "${srcdir}/0001-arm64-dts-Fix-rk3399-orangepi-4-dts-symbol-usage.patch"
+        for patch in "$(ls ${srcdir} | grep '.patch$' | sort)"; do
+                msg2 "Applying $patch"
+                patch -Np1 < "${srcdir}/$patch"
+        done
 
         cat "${srcdir}/config" > ./.config
         make olddefconfig
@@ -52,7 +63,4 @@ package() {
 
         install -Dm644 "arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dtb" "${pkgdir}/boot/dtbs/rockchip/rk3399-orangepi-4.dtb"
 }
-md5sums=('0e5c4c15266218ef26c50fac0016095b'
-         'cc2ae6ac43ab9e6170bfed62f73e4968'
-         'SKIP'
-         '67e1998c82ab2d06a78f8eb57cb69132')
+
