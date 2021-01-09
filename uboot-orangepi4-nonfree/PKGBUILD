@@ -1,0 +1,73 @@
+# Maintainer: Davide Depau <davide@depau.eu>
+# Contributor: Nadia Holmquist Pedersen <nadia@nhp.sh>
+
+pkgname=uboot-orangepi4-nonfree
+pkgver=2020.10
+_ubootver=$(echo "$pkgver" | sed "s/rc/-rc/")
+_tfatag=v2.4
+_armbianrev=e2104390d9998462ba30202cd55134f349ce8d7a
+pkgrel=1
+pkgdesc='U-boot for Orange Pi 4, with non-free DDR and loader binaries'
+arch=('aarch64')
+url='https://www.denx.de/wiki/U-Boot'
+license=('GPL2')
+install=${pkgname}.install
+provides=("uboot-orangepi4")
+conflicts=("uboot-orangepi4")
+makedepends=('bc' 'make' 'gcc' 'dtc' 'uboot-tools' 'arm-none-eabi-gcc' 'python')
+
+source=("u-boot-${_ubootver}::git+https://gitlab.denx.de/u-boot/u-boot.git#tag=v${_ubootver}"
+	"git+https://github.com/rockchip-linux/rkbin.git"
+	"uboot-rockchip::git+https://github.com/rockchip-linux/u-boot.git"
+	"0001-Add-board-Orange-Pi-4.patch"
+	"0001-scripts-dtc-Remove-redundant-YYLOC-global-declaratio.patch"
+)
+sha256sums=('SKIP'
+            'SKIP'
+            'SKIP'
+            '2defe3a3588a049f3f17ac4a64a437ebb0c16214a6e4ccc0f603ff61f918aa9a'
+            '13e8b650a9552eae9a55eff4cbc2408c2bd8f408109a73fd6927b1d605718a6b')
+
+prepare() {
+	msg2 "Patching u-boot"
+	cd "${srcdir}/u-boot-${_ubootver}"
+	patch -Np1 -i "${srcdir}/0001-Add-board-Orange-Pi-4.patch"
+
+	msg2 "Patching uboot-rockchip"
+	cd "${srcdir}/uboot-rockchip"
+	patch -Np1 -i "${srcdir}/0001-scripts-dtc-Remove-redundant-YYLOC-global-declaratio.patch"
+}
+
+build() {
+	msg2 "Making proprietary trusted firmware tools from free sources"
+	cd "${srcdir}/uboot-rockchip"
+	make rk3399_defconfig
+	make tools
+	trust_merger="${srcdir}/uboot-rockchip/tools/trust_merger"
+	loaderimage="${srcdir}/uboot-rockchip/tools/loaderimage"
+	
+	msg2 "Making U-Boot proper from free sources"
+	unset CFLAGS CXXFLAGS CPPFLAGS LDFLAGS
+	cd "${srcdir}/u-boot-${_ubootver}"
+
+	make orangepi-4-rk3399_defconfig
+	make BL31="${srcdir}/rkbin/bin/rk33/rk3399_bl31_v1.35.elf" u-boot-dtb.bin
+
+	msg2 "Building images from U-Boot and proprietary blobs"
+	[ -f idbloader.img ] && rm idbloader.img
+	"./tools/mkimage" -n rk3399 -T rksd -d "${srcdir}/rkbin/bin/rk33/rk3399_ddr_933MHz_v1.24.bin" idbloader.img
+	cat "${srcdir}/rkbin/bin/rk33/rk3399_miniloader_v1.26.bin" >> idbloader.img
+
+	cd "${srcdir}/rkbin"
+	"$trust_merger" RKTRUST/RK3399TRUST.ini
+	"$loaderimage" --pack --uboot "${srcdir}/u-boot-${_ubootver}/u-boot-dtb.bin" uboot.img
+}
+
+package() {
+	cd "${srcdir}/u-boot-${_ubootver}"
+	install -Dm644 idbloader.img "${pkgdir}"/boot/idbloader.img
+
+	cd "${srcdir}/rkbin"
+	install -Dm644 uboot.img "${pkgdir}"/boot/uboot.img
+	install -Dm644 trust.img "${pkgdir}"/boot/trust.img 
+}

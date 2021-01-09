@@ -1,0 +1,14 @@
+uboot_info() {
+  echo "Run the following commands to write u-boot to your SD or eMMC:"
+  echo "# dd seek=64 if=/boot/idbloader.img of=/dev/mmcblkX"
+  echo "# dd seek=16384 if=/boot/uboot.img  of=/dev/mmcblkX"
+  echo "# dd seek=24576 if=/boot/trust.img  of=/dev/mmcblkX"
+}
+
+post_install() {
+  uboot_info
+}
+
+post_upgrade() {
+  uboot_info
+}
