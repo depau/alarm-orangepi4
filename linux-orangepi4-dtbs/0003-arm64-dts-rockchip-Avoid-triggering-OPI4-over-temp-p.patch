@@ -1,0 +1,36 @@
+From 5a21795d83913520ac052deb6951fe2fdcc04773 Mon Sep 17 00:00:00 2001
+From: Davide Depau <davide@depau.eu>
+Date: Fri, 2 Oct 2020 06:31:28 +0200
+Subject: [PATCH] arm64: dts: rockchip: Avoid triggering OPI4 over-temp
+ protection
+
+---
+ .../arm64/boot/dts/rockchip/rk3399-orangepi-4.dts | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts b/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts
+index f0efcc7f01f9..495ca4ac803c 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts
+@@ -1185,3 +1185,18 @@ &dp_in_vopl {
+ 	status = "okay";
+ };
+ 
++// The Orange Pi 4 triggers a reset if the temperature reaches 90°C.
++// Set a lower alerts + critical temperature to avoid getting to that point.
++
++&cpu_alert0 {
++	temperature = <80000>;
++};
++
++&cpu_alert1 {
++	temperature = <85000>;
++};
++
++&cpu_crit {
++	temperature = <90000>;
++};
++
+-- 
+2.28.0
+

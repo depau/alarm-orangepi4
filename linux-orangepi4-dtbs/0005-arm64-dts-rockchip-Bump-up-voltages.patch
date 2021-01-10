@@ -1,0 +1,110 @@
+From ab1bb7e3199342e24fe04a0ddef57e35489818ee Mon Sep 17 00:00:00 2001
+From: Davide Depau <davide@depau.eu>
+Date: Sun, 10 Jan 2021 02:57:39 +0100
+Subject: [PATCH 1/2] arm64: dts: rockchip: Bump up voltages
+
+It seems like at folks at Armbian have had very good luck in the
+ silicon lottery. I haven't.
+
+Bump up the maximum voltages so the system is more stable.
+
+Signed-off-by: Davide Depau <davide@depau.eu>
+---
+ .../boot/dts/rockchip/rk3399-orangepi-4.dts   | 24 ++++++++++---------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts b/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts
+index 201755dfee7a..ad72a5ba527f 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3399-orangepi-4.dts
+@@ -68,17 +68,15 @@ vbus_typec: vbus-typec {
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&vcc5v0_typec_en>;
+ 		regulator-name = "vbus_typec";
+-		regulator-always-on;
+ 		regulator-min-microvolt = <5000000>;
+ 		regulator-max-microvolt = <5000000>;
+ 		vin-supply = <&vcc5v0_sys>;
+ 
+ 		regulator-state-mem {
+-			regulator-on-in-suspend;
++			regulator-off-in-suspend;
+ 		};
+ 	};
+ 
+-	/* 0.9 V supply, over PMIC
+ 	vcc_0v9: vcc-0v9 {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "vcc_0v9";
+@@ -87,8 +85,7 @@ vcc_0v9: vcc-0v9 {
+ 		regulator-min-microvolt = <900000>;
+ 		regulator-max-microvolt = <900000>;
+ 		vin-supply = <&vcc3v3_sys>;
+-	}
+-	*/
++	};
+ 
+ 	vcc3v0_sd: vcc3v0-sd {
+ 		compatible = "regulator-fixed";
+@@ -98,6 +95,7 @@ vcc3v0_sd: vcc3v0-sd {
+ 		pinctrl-0 = <&sdmmc0_pwr_h>;
+ 		regulator-name = "vcc3v0_sd";
+ 		regulator-always-on;
++		regulator-boot-on;
+ 		regulator-min-microvolt = <3000000>;
+ 		regulator-max-microvolt = <3000000>;
+ 		vin-supply = <&vcc3v3_sys>;
+@@ -162,6 +160,10 @@ vdd_log: vdd-log {
+ 		regulator-always-on;
+ 		regulator-boot-on;
+ 		vin-supply = <&vcc3v3_sys>;
++
++		regulator-state-mem {
++			regulator-on-in-suspend;
++		};
+ 	};
+ 
+ 	rt5651_card: rt5651-sound {
+@@ -508,8 +510,8 @@ vdd_center: DCDC_REG1 {
+ 				regulator-name = "vdd_center";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+-				regulator-min-microvolt = <750000>;
+-				regulator-max-microvolt = <1350000>;
++				regulator-min-microvolt = <700000>;
++				regulator-max-microvolt = <1500000>;
+ 				regulator-ramp-delay = <6001>;
+ 				regulator-state-mem {
+ 					regulator-off-in-suspend;
+@@ -520,8 +522,8 @@ vdd_cpu_l: DCDC_REG2 {
+ 				regulator-name = "vdd_cpu_l";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+-				regulator-min-microvolt = <750000>;
+-				regulator-max-microvolt = <1350000>;
++				regulator-min-microvolt = <700000>;
++				regulator-max-microvolt = <1500000>;
+ 				regulator-ramp-delay = <6001>;
+ 				regulator-state-mem {
+ 					regulator-off-in-suspend;
+@@ -538,7 +540,7 @@ regulator-state-mem {
+ 			};
+ 
+ 			vcc1v8: vcc1v8_s3: vcca1v8_s3: DCDC_REG4 {
+-				regulator-name = "vcc1v8";
++				regulator-name = "vcc_1v8";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+ 				regulator-min-microvolt = <1800000>;
+@@ -572,7 +574,7 @@ regulator-state-mem {
+ 			};
+ 
+ 			vcc1v8_pmu: LDO_REG3 {
+-				regulator-name = "vcc1v8_pmu";
++				regulator-name = "vcc1v8_pmupll";
+ 				regulator-always-on;
+ 				regulator-boot-on;
+ 				regulator-min-microvolt = <1800000>;
+-- 
+2.30.0
+

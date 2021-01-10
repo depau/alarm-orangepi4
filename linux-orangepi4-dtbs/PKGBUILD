@@ -1,10 +1,10 @@
 # Maintainer: Davide Depau <davide@depau.eu>
 
 pkgname=linux-orangepi4-dtbs
-pkgver=5.8.0
+pkgver=5.8.9
 _srcname=linux-5.8
 _armbianrev=36405e3397b68600bdd2c34d5a7bcfa0a09b1226
-pkgrel=2
+pkgrel=1
 pkgdesc="Orange Pi 4 DTBs from Armbian"
 arch=('aarch64')
 url='https://github.com/armbian/build/tree/master/patch/kernel/rockchip64-current'
@@ -13,37 +13,47 @@ depends=('linux-aarch64')
 makedepends=('git' 'dtc')
 source=(
         "http://www.kernel.org/pub/linux/kernel/v5.x/${_srcname}.tar.xz"
+        "http://www.kernel.org/pub/linux/kernel/v5.x/patch-${pkgver}.xz"
         "config"  # from ALARM linux-aarch64
         "armbian-patches::git+https://github.com/armbian/build.git#commit=${_armbianrev}"
         "0001-arm64-dts-Fix-rk3399-orangepi-4-dts-symbol-usage.patch"
         "0002-arm64-dts-rockchip-Fix-USB-C-port-on-Orange-Pi-4.patch"
-        #"0003-MAINTAINER-CUSTOM-PATCH-Additional-PWM-fan.patch"
+        "0003-arm64-dts-rockchip-Avoid-triggering-OPI4-over-temp-p.patch"
+        #"0004-MAINTAINER-CUSTOM-PATCH-Additional-PWM-fan.patch"
+	"0005-arm64-dts-rockchip-Bump-up-voltages.patch"
+	"0006-arm64-dts-rockchip-Orange-Pi-4-SDHCI-SDIO-allow-lowe.patch"
+	"0007-rk3399-bump-voltages-for-low-opps.patch"
 )
-md5sums=(
-         '0e5c4c15266218ef26c50fac0016095b'
+md5sums=('0e5c4c15266218ef26c50fac0016095b'
+         '76f0d7bc98014e70f9d3dd56dca08bd4'
          'cc2ae6ac43ab9e6170bfed62f73e4968'
          'SKIP'
-         '67e1998c82ab2d06a78f8eb57cb69132'
-         #'662d3217042b175e32c216e8bc882883'
-)
+         'fd3e2c8f6b5abf949a14c0cfdee5dd61'
+         '662d3217042b175e32c216e8bc882883'
+         '93bad42af574ee474e09029307966d2e'
+         'ffa21b67c6e37251cd1f7bb815a66e6b'
+         'd6c10e5db15b787ddd7669be576174e3'
+         '2dcafea35f7d2f191737f05a0285ca44')
 
 _patches=(
         "RK3399-enable_1.5_2.0_ghz_cpufreq_opp.patch"
         "add-board-orangepi-4.patch"
         "rk3399-add-sclk-i2sout-src-clock.patch"
-        "rk3399-sd-drive-level-8ma.patch"
-        "unlock-temperature.patch"
+        #"rk3399-sd-drive-level-8ma.patch"
 )
 
 prepare() {
         cd "${_srcname}"
 
+        # add upstream patch
+        git apply --whitespace=nowarn ../patch-${pkgver}
+
         for patch in "${_patches[@]}"; do
-                msg2 "Applying $patch"
+                msg2 "Applying $patch (Armbian)"
                 patch -Np1 < "${srcdir}/armbian-patches/patch/kernel/rockchip64-current/${patch}"
         done
 
-        for patch in "$(ls ${srcdir} | grep '.patch$' | sort)"; do
+        for patch in $(ls "${srcdir}" | grep '.patch$' | sort); do
                 msg2 "Applying $patch"
                 patch -Np1 < "${srcdir}/$patch"
         done

@@ -1,7 +1,7 @@
 pkgbase = linux-orangepi4-dtbs
 	pkgdesc = Orange Pi 4 DTBs from Armbian
-	pkgver = 5.8.0
-	pkgrel = 2
+	pkgver = 5.8.9
+	pkgrel = 1
 	url = https://github.com/armbian/build/tree/master/patch/kernel/rockchip64-current
 	arch = aarch64
 	license = GPL2
@@ -9,14 +9,25 @@ pkgbase = linux-orangepi4-dtbs
 	makedepends = dtc
 	depends = linux-aarch64
 	source = http://www.kernel.org/pub/linux/kernel/v5.x/linux-5.8.tar.xz
+	source = http://www.kernel.org/pub/linux/kernel/v5.x/patch-5.8.9.xz
 	source = config
 	source = armbian-patches::git+https://github.com/armbian/build.git#commit=36405e3397b68600bdd2c34d5a7bcfa0a09b1226
 	source = 0001-arm64-dts-Fix-rk3399-orangepi-4-dts-symbol-usage.patch
 	source = 0002-arm64-dts-rockchip-Fix-USB-C-port-on-Orange-Pi-4.patch
+	source = 0003-arm64-dts-rockchip-Avoid-triggering-OPI4-over-temp-p.patch
+	source = 0005-arm64-dts-rockchip-Bump-up-voltages.patch
+	source = 0006-arm64-dts-rockchip-Orange-Pi-4-SDHCI-SDIO-allow-lowe.patch
+	source = 0007-rk3399-bump-voltages-for-low-opps.patch
 	md5sums = 0e5c4c15266218ef26c50fac0016095b
+	md5sums = 76f0d7bc98014e70f9d3dd56dca08bd4
 	md5sums = cc2ae6ac43ab9e6170bfed62f73e4968
 	md5sums = SKIP
-	md5sums = 67e1998c82ab2d06a78f8eb57cb69132
+	md5sums = fd3e2c8f6b5abf949a14c0cfdee5dd61
+	md5sums = 662d3217042b175e32c216e8bc882883
+	md5sums = 93bad42af574ee474e09029307966d2e
+	md5sums = ffa21b67c6e37251cd1f7bb815a66e6b
+	md5sums = d6c10e5db15b787ddd7669be576174e3
+	md5sums = 2dcafea35f7d2f191737f05a0285ca44
 
 pkgname = linux-orangepi4-dtbs
 
