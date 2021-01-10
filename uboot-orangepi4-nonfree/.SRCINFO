@@ -1,0 +1,30 @@
+pkgbase = uboot-orangepi4-nonfree
+	pkgdesc = U-boot for Orange Pi 4, with non-free DDR and loader binaries
+	pkgver = 2020.10
+	pkgrel = 2
+	url = https://www.denx.de/wiki/U-Boot
+	install = uboot-orangepi4-nonfree.install
+	arch = aarch64
+	license = GPL2
+	makedepends = bc
+	makedepends = make
+	makedepends = gcc
+	makedepends = dtc
+	makedepends = uboot-tools
+	makedepends = arm-none-eabi-gcc
+	makedepends = python
+	provides = uboot-orangepi4
+	conflicts = uboot-orangepi4
+	source = u-boot-2020.10::git+https://gitlab.denx.de/u-boot/u-boot.git#tag=v2020.10
+	source = git+https://github.com/rockchip-linux/rkbin.git
+	source = uboot-rockchip::git+https://github.com/rockchip-linux/u-boot.git
+	source = 0001-Add-board-Orange-Pi-4.patch
+	source = 0001-scripts-dtc-Remove-redundant-YYLOC-global-declaratio.patch
+	sha256sums = SKIP
+	sha256sums = SKIP
+	sha256sums = SKIP
+	sha256sums = 667d9b35e2b038a11d6d88df065b9f75a0af84f34210c0e04377094d9433664b
+	sha256sums = 13e8b650a9552eae9a55eff4cbc2408c2bd8f408109a73fd6927b1d605718a6b
+
+pkgname = uboot-orangepi4-nonfree
+

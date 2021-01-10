@@ -4,9 +4,8 @@
 pkgname=uboot-orangepi4-nonfree
 pkgver=2020.10
 _ubootver=$(echo "$pkgver" | sed "s/rc/-rc/")
-_tfatag=v2.4
 _armbianrev=e2104390d9998462ba30202cd55134f349ce8d7a
-pkgrel=1
+pkgrel=2
 pkgdesc='U-boot for Orange Pi 4, with non-free DDR and loader binaries'
 arch=('aarch64')
 url='https://www.denx.de/wiki/U-Boot'
@@ -25,7 +24,7 @@ source=("u-boot-${_ubootver}::git+https://gitlab.denx.de/u-boot/u-boot.git#tag=v
 sha256sums=('SKIP'
             'SKIP'
             'SKIP'
-            '2defe3a3588a049f3f17ac4a64a437ebb0c16214a6e4ccc0f603ff61f918aa9a'
+            '667d9b35e2b038a11d6d88df065b9f75a0af84f34210c0e04377094d9433664b'
             '13e8b650a9552eae9a55eff4cbc2408c2bd8f408109a73fd6927b1d605718a6b')
 
 prepare() {

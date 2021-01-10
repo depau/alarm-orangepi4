@@ -1,4 +1,4 @@
-From 99642f857e42376991257a3612cf904e4f8b629f Mon Sep 17 00:00:00 2001
+From ab9a2877a6d4f9688a262a28397a03b424d5ec6c Mon Sep 17 00:00:00 2001
 From: Davide Depau <davide@depau.eu>
 Date: Sat, 9 Jan 2021 17:52:47 +0100
 Subject: [PATCH] Add board Orange Pi 4
@@ -11,8 +11,8 @@ Co-Authored-By: Piotr Szczepanik <piter75@gmail.com>
  arch/arm/dts/Makefile                      |   1 +
  arch/arm/dts/rk3399-orangepi-4-u-boot.dtsi |  13 ++
  arch/arm/dts/rk3399-orangepi-4.dts         | 206 +++++++++++++++++++++
- configs/orangepi-4-rk3399_defconfig        |  66 +++++++
- 4 files changed, 286 insertions(+)
+ configs/orangepi-4-rk3399_defconfig        |  69 +++++++
+ 4 files changed, 289 insertions(+)
  create mode 100644 arch/arm/dts/rk3399-orangepi-4-u-boot.dtsi
  create mode 100644 arch/arm/dts/rk3399-orangepi-4.dts
  create mode 100644 configs/orangepi-4-rk3399_defconfig
@@ -262,10 +262,10 @@ index 0000000000..65e9c44b7c
 +};
 diff --git a/configs/orangepi-4-rk3399_defconfig b/configs/orangepi-4-rk3399_defconfig
 new file mode 100644
-index 0000000000..5d87634e16
+index 0000000000..74a2cde573
 --- /dev/null
 +++ b/configs/orangepi-4-rk3399_defconfig
-@@ -0,0 +1,66 @@
+@@ -0,0 +1,69 @@
 +CONFIG_ARM=y
 +CONFIG_ARCH_ROCKCHIP=y
 +CONFIG_SYS_TEXT_BASE=0x00200000
@@ -299,6 +299,9 @@ index 0000000000..5d87634e16
 +CONFIG_SYS_RELOC_GD_ENV_ADDR=y
 +CONFIG_ROCKCHIP_GPIO=y
 +CONFIG_SYS_I2C_ROCKCHIP=y
++CONFIG_MMC_IO_VOLTAGE=y
++CONFIG_MMC_HS400_SUPPORT=y
++CONFIG_SPL_MMC_HS400_SUPPORT=y
 +CONFIG_MMC_DW=y
 +CONFIG_MMC_DW_ROCKCHIP=y
 +CONFIG_MMC_SDHCI=y
