@@ -2,11 +2,10 @@
 # Contributor: Nadia Holmquist Pedersen <nadia@nhp.sh>
 
 pkgname=uboot-orangepi4
-pkgver=2020.07
+pkgver=2020.10
 _ubootver=$(echo "$pkgver" | sed "s/rc/-rc/")
-_tfatag=v2.3
-_armbianrev=36405e3397b68600bdd2c34d5a7bcfa0a09b1226
-pkgrel=2
+_tfatag=v2.4
+pkgrel=1
 pkgdesc='U-boot for Orange Pi 4'
 arch=('aarch64')
 url='https://www.denx.de/wiki/U-Boot'
@@ -17,19 +16,17 @@ makedepends=('bc' 'make' 'gcc' 'dtc' 'uboot-tools' 'arm-none-eabi-gcc' 'python')
 source=(
 	"git+https://github.com/ARM-software/arm-trusted-firmware.git#tag=${_tfatag}"
 	"ftp://ftp.denx.de/pub/u-boot/u-boot-${_ubootver}.tar.bz2"
-	"armbian-patches::git+https://github.com/armbian/build.git#commit=${_armbianrev}"
+	"0001-Add-board-Orange-Pi-4.patch"
 )
 sha256sums=('SKIP'
-            'c1f5bf9ee6bb6e648edbf19ce2ca9452f614b08a9f886f1a566aa42e8cf05f6a'
-	    'SKIP')
+            '0d481bbdc05c0ee74908ec2f56a6daa53166cc6a78a0e4fac2ac5d025770a622'
+            '667d9b35e2b038a11d6d88df065b9f75a0af84f34210c0e04377094d9433664b')
 
 prepare() {
+	msg "Patching u-boot"
 	cd "${srcdir}/u-boot-${_ubootver}"
-
-	# Apply Armbian patches for Orange Pi 4 support
-	find "${srcdir}/armbian-patches/patch/u-boot/u-boot-rockchip64-mainline" -type f -name '*.patch' | while read -r patch; do
-	  patch -Np1 -i "$patch"
-	done
+  
+	patch -Np1 < "${srcdir}/0001-Add-board-Orange-Pi-4.patch"
 }
 
 build() {

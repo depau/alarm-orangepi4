@@ -1,0 +1,24 @@
+pkgbase = uboot-orangepi4
+	pkgdesc = U-boot for Orange Pi 4
+	pkgver = 2020.10
+	pkgrel = 1
+	url = https://www.denx.de/wiki/U-Boot
+	install = uboot-orangepi4.install
+	arch = aarch64
+	license = GPL2
+	makedepends = bc
+	makedepends = make
+	makedepends = gcc
+	makedepends = dtc
+	makedepends = uboot-tools
+	makedepends = arm-none-eabi-gcc
+	makedepends = python
+	source = git+https://github.com/ARM-software/arm-trusted-firmware.git#tag=v2.4
+	source = ftp://ftp.denx.de/pub/u-boot/u-boot-2020.10.tar.bz2
+	source = 0001-Add-board-Orange-Pi-4.patch
+	sha256sums = SKIP
+	sha256sums = 0d481bbdc05c0ee74908ec2f56a6daa53166cc6a78a0e4fac2ac5d025770a622
+	sha256sums = 667d9b35e2b038a11d6d88df065b9f75a0af84f34210c0e04377094d9433664b
+
+pkgname = uboot-orangepi4
+
