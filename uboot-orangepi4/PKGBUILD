@@ -5,7 +5,7 @@ pkgname=uboot-orangepi4
 pkgver=2020.10
 _ubootver=$(echo "$pkgver" | sed "s/rc/-rc/")
 _tfatag=v2.4
-pkgrel=1
+pkgrel=2
 pkgdesc='U-boot for Orange Pi 4'
 arch=('aarch64')
 url='https://www.denx.de/wiki/U-Boot'
@@ -20,7 +20,7 @@ source=(
 )
 sha256sums=('SKIP'
             '0d481bbdc05c0ee74908ec2f56a6daa53166cc6a78a0e4fac2ac5d025770a622'
-            '667d9b35e2b038a11d6d88df065b9f75a0af84f34210c0e04377094d9433664b')
+            '7761a5126e19ec50b97017d28c67accd1dbb31ec87da79d8d50356d8dad43147')
 
 prepare() {
 	msg "Patching u-boot"
