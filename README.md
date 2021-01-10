@@ -30,7 +30,7 @@ RAM gets set up at ~1800MHz versus ~1600MHz with the FOSS ram init, not benchmar
 **Update:** It only seems to crash when loading Armbian since they use non-standard stuff. Use their bootloader
 or simply don't use that pile of duct-tape.
 
-If you need to boot from SD card after flashing this, you can flash a known-good U-Boot image to an SD card,
+If you need to boot from SD card after flashing a broken firmware, you can flash a known-good U-Boot image to an SD card,
 then using a needle you can short the test point `TP50265` to ground at the very first boot stages (look at the
 board from the back, vertically, with Ethernet port at the bottom: the testpad is approx. 1cm above the right edge
 of the SD card slot). Remove short as soon as you see UART output. The board will boot the firmware from the SD
