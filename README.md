@@ -6,6 +6,10 @@ The packages work, I'm using my DTB on two Orange Pis and they work fine for the
 I'll try to fix any issues I can fix and once everything is working, evaluate sending packages
 back to upstream for mainlining.
 
+99% of the DTB comes from Armbian, with some changes to fix some issues. No warranties on code quality or
+correctness, "it works on my machine". **Not enough effort was put into this**, otherwise you wouldn't find
+it here but rather in the upstream kernel.
+
 ## Packages
 
 ### ap6256-firmware
